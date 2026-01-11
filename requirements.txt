@@ -1,0 +1,11 @@
+# Audio
+pyaudio>=0.2.13
+
+# Azure Authentication
+azure-identity>=1.15.0
+
+# OpenAI SDK with Realtime support
+openai[realtime]>=1.54.0
+
+# Additional utilities
+python-dotenv>=1.0.0

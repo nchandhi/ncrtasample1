@@ -1,0 +1,253 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background: #f5f5f5;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+.header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+}
+
+.message.user {
+  align-self: flex-end;
+}
+
+.message.assistant {
+  align-self: flex-start;
+}
+
+.message-content {
+  padding: 12px 16px;
+  border-radius: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+
+.ai-disclaimer {
+  font-size: 12px;
+  color: #8a8886;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+.message.user .message-content {
+  background: #d4ddf7;
+  color: #323130;
+}
+
+.message.assistant .message-content {
+  background: #ebebeb;
+  color: #323130;
+}
+
+.input-container {
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  align-items: center;
+}
+
+.new-chat-button {
+  padding: 10px !important;
+  background: #f3f2f1 !important;
+  color: #323130 !important;
+  border-radius: 8px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-chat-button:hover:not(:disabled) {
+  background: #e1dfdd !important;
+}
+
+.input-container input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-container input:focus {
+  border-color: #0078d4;
+}
+
+.input-container input:disabled {
+  background: #f3f2f1;
+  cursor: not-allowed;
+}
+
+.input-container button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #0078d4;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.input-container button:hover:not(:disabled) {
+  background: #106ebe;
+}
+
+.input-container button:disabled {
+  background: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.mic-button {
+  padding: 10px 16px !important;
+  background: #0078d4 !important;
+  color: white !important;
+  font-size: 20px !important;
+}
+
+.mic-button:hover:not(:disabled) {
+  background: #106ebe !important;
+}
+
+.mic-button.recording {
+  background: #d13438 !important;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.sidebar {
+  width: 320px;
+  background: white;
+  border-left: 1px solid #e0e0e0;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.prompts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.prompt-item {
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #605e5c;
+  cursor: pointer;
+  transition: background 0.2s;
+  line-height: 1.4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-summary {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.delete-chat-btn {
+  padding: 4px;
+  background: none;
+  border: none;
+  color: #a19f9d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  opacity: 0;
+  flex-shrink: 0;
+}
+
+.prompt-item:hover .delete-chat-btn {
+  opacity: 1;
+}
+
+.delete-chat-btn:hover {
+  color: #d13438;
+}
+
+.prompt-item:hover {
+  background: #f3f2f1;
+}
+
+.prompt-item.active {
+  background: #d4ddf7;
+  border-left: 3px solid #5b6fc4;
+  color: #5b6fc4;
+  font-weight: 500;
+}
+
+.prompt-item.active .delete-chat-btn {
+  opacity: 1;
+}
