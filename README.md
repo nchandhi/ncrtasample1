@@ -1,79 +1,197 @@
-# Voice-Enabled Foundry Agent with GPT-4o Realtime
+# Real-Time Chat Application
 
-A Python script that creates a real-time voice conversation agent using Microsoft Azure AI Foundry and GPT-4o Realtime model.
+A full-stack application featuring real-time text and voice chat powered by Azure OpenAI Realtime API.
 
 ## Features
 
-- **Real-Time Voice Conversation**: Direct audio streaming to/from GPT-4o Realtime model
-- **Voice Activity Detection**: Automatically detects when you start and stop speaking
-- **Natural Conversation**: No button presses needed - just speak naturally
-- **Low Latency**: Direct audio processing without intermediate text conversion
-- **Azure AI Foundry Integration**: Uses Azure AI Foundry project connections
+- **Real-Time Text Chat**: Streaming text responses with full conversation context
+- **Voice Chat**: Direct audio input/output with automatic transcription
+- **Chat History**: Auto-saved conversations with AI-generated captions
+- **Seamless Mode Switching**: Switch between text and voice mid-conversation
+- **Modern UI**: Clean, responsive interface with Contoso branding
+- **WebSocket Communication**: Low-latency bidirectional streaming
+
+## Architecture
+
+- **Backend**: FastAPI with WebSocket support (`/api`)
+- **Frontend**: React with Vite (`/app`)
+- **AI**: Azure OpenAI Realtime API (gpt-realtime) + GPT-4o/GPT-5.1 for captions
+
+---
 
 ## Setup
 
-### 1. Install Dependencies
+### Prerequisites
+
+- Python 3.8+
+- Node.js 16+
+- Azure OpenAI resource with:
+  - Realtime API deployment (gpt-realtime)
+  - Chat completions deployment (gpt-4o or gpt-5.1)
+- Azure CLI (for authentication) or service principal
+
+### 1. Backend Setup (API)
 
 ```bash
+# Navigate to API folder
+cd api
+
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# Mac/Linux:
+source venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
+
+# Configure environment
+copy .env.example .env
+# Edit .env with your Azure OpenAI credentials
+
+# Run the API server
+python main.py
 ```
 
-**Note for Windows users**: If you encounter issues installing `pyaudio`, you may need to:
-- Install it via conda: `conda install pyaudio`
-- Or download a precompiled wheel from [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyaudio)
+The API will start on `http://localhost:8001`
 
-### 2. Configure Environment
+**api/.env configuration:**
+```env
+AZURE_OPENAI_ENDPOINT=https://your-resource.openai.azure.com
+AZURE_OPENAI_DEPLOYMENT_NAME=gpt-realtime
+AZURE_OPENAI_CHAT_DEPLOYMENT=gpt-5.1
+CORS_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:5173
+```
 
-Copy `.env.example` to `.env` and update with your Azure AI Foundry project connection string:
+### 2. Frontend Setup (App)
 
 ```bash
-cp .env.example .env
+# Navigate to app folder
+cd app
+
+# Install dependencies
+npm install
+
+# (Optional) Configure environment
+copy .env.example .env
+# Default API URL is http://localhost:8001
+
+# Run development server
+npm run dev
 ```
 
-Edit `.env` with your actual Azure AI Foundry project connection string. You can find this in the Azure AI Foundry portal under your project settings.
+The app will start on `http://localhost:5173` (or next available port)
 
-### 3. Run the Agent
-
-```bash
-python voice_foundry_agent.py
+**app/.env configuration (optional):**
+```env
+VITE_API_URL=http://localhost:8001
 ```
+
+---
 
 ## Usage
 
-1. Start the script - it connects to GPT-4o Realtime
-2. Start speaking naturally - no need to press any buttons
-3. The model automatically detects when you finish speaking
-4. The agent responds in real-time with voice
-5. Press Ctrl+C to exit
-How It Works
+### Text Chat
+1. Type your message in the input box
+2. Press Enter or click Send
+3. Receive streaming responses in real-time
 
-1. The script creates an Azure AI Foundry agent using the `gpt-4o` model
-2. A conversation thread is created to maintain context
-3. When you speak, your voice is converted to text
-4. The text is sent to the agent as a message in the thread
-5. The agent processes the message and responds
-6. The response is converted to speech
-7. The conversation continues with full context awareness
+### Voice Chat
+1. Click the microphone button
+2. Speak naturally (voice activity detection enabled)
+3. AI responds with voice and text transcription
+4. Click microphone again to stop
 
-## Customization
+### Chat History
+- Conversations auto-save with AI-generated captions
+- Click any chat to load it
+- Hover over a chat to see the delete button
+- Click "+" to start a new conversation
 
-You can customize the agent by modifying the agent creation in `_initialize_agent()`:
+---
 
-```python
-self.agent = self.client.agents.create_agent(
-    model="gpt-4o",  # Change to your deployed model
-    name=self.agent_name,
-    instructions="Your custom instructions here"
-)
+## API Endpoints
+
+### WebSocket Endpoints
+- `ws://localhost:8001/ws/text` - Text chat
+- `ws://localhost:8001/ws/audio` - Audio chat
+
+### REST Endpoints
+- `GET /chat-history` - List all chats
+- `POST /chat-history` - Create new chat
+- `PUT /chat-history/{id}` - Update chat
+- `DELETE /chat-history/{id}` - Delete chat
+- `POST /generate-caption` - Generate AI caption
+
+---
+
+## Deployment Notes
+
+### Backend
+- Set environment variables in production
+- Use production ASGI server (Uvicorn with workers)
+- Enable HTTPS for WebSocket security (wss://)
+- Update CORS origins to production URLs
+
+### Frontend
+- Build for production: `npm run build`
+- Set `VITE_API_URL` to production API URL
+- Serve static files from `dist/` folder
+
+---
+
+## Project Structure
+
+```
+├── api/                    # FastAPI backend
+│   ├── main.py            # WebSocket server & routes
+│   ├── requirements.txt   # Python dependencies
+│   └── .env.example       # Environment template
+├── app/                   # React frontend
+│   ├── src/
+│   │   ├── App.jsx       # Main component
+│   │   └── App.css       # Styles
+│   ├── package.json      # Node dependencies
+│   └── .env.example      # Environment template
+├── DEMO_SCRIPT.md        # Technical demo script
+├── DEMO_SCRIPT_RETAIL.md # Retail demo script
+└── README.md             # This file
 ```
 
-You can also add tools, functions, or file search capabilities to the agent for more advanced features.nections = self.client.connections.list()
-```
+---
 
-## Requirements
+## Authentication
 
-- Python 3.8+
-- Working microphone
-- Azure AI Foundry project with connection string
-- Azure authentication (Azure CLI login or service principal)
-- Internet connection for speech recognition
+The application uses **Azure DefaultAzureCredential** which supports:
+- Azure CLI login (`az login`)
+- Managed Identity (in Azure)
+- Environment variables
+- Service Principal
+
+For local development, run `az login` before starting the API.
+
+---
+
+## Troubleshooting
+
+**WebSocket connection fails:**
+- Ensure API server is running on port 8001
+- Check CORS_ORIGINS includes your frontend URL
+
+**Audio not working:**
+- Allow microphone permissions in browser
+- Check browser console for errors
+- Verify Azure OpenAI Realtime deployment is active
+
+**Chat history not saving:**
+- Check API logs for errors
+- Verify GPT deployment for caption generation exists
+
+---
+
+## License
+
+MIT License
